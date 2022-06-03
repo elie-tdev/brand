@@ -1,0 +1,9 @@
+scalar JWT
+
+scalar UUID
+
+scalar JSON
+
+scalar Date
+
+scalar Time

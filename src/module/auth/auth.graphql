@@ -1,0 +1,8 @@
+type Mutation {
+  login(email: String!, password: String!): AuthToken
+  signup(email: String!, password: String!): AuthToken
+}
+
+type AuthToken {
+  token: JWT
+}

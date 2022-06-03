@@ -1,0 +1,68 @@
+type Query {
+  userList: [User]
+  getUserContextByFirebaseUid(firebaseUid: String!): UserCtx
+}
+
+type Mutation {
+  createUser(values: UserInput): String
+  updateUsersNameEmail(name: String!, email: String!): User
+}
+
+type User {
+  userId: UUID!
+  firebaseUid: String!
+  name: String!
+  email: EmailAddress!
+  policiesAgreed: Boolean # PoliciesPayload
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+  deletedAt: DateTime
+}
+
+input UserInput {
+  firebaseUid: String!
+  name: String!
+  email: EmailAddress!
+  policiesAgreed: Boolean # PoliciesPayload
+}
+
+type UserCtx {
+  name: String!
+  userId: String!
+  tenantId: String!
+  userTenantRoleSlug: UserTenantRoleSlugs!
+  brands: [UserBrands]
+}
+
+type UserBrands {
+  brandId: String!
+  chargebeeSubscriptionId: String
+  subscriptionPeriodEnds: PositiveInt
+  tenantBrandRoleSlug: TenantBrandRoleSlugs!
+}
+
+type UserNameEmail {
+  name: String!
+  email: String!
+}
+
+type PoliciesPayload {
+  version: String!
+  timestamp: DateTime!
+}
+
+enum UserTenantRoleSlugs {
+  admin
+  editor
+  user
+}
+
+type UserTenantRoles {
+  userTenantRoleSlug: UserTenantRoleSlugs
+  displayName: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+  deletedAt: DateTime
+}

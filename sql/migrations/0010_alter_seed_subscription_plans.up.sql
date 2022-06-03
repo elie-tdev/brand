@@ -1,0 +1,19 @@
+-- Convert jsonb type to text
+ALTER TABLE subscription_plans
+ALTER COLUMN features TYPE text USING features::text;
+
+-- Convert test to text[]
+ALTER TABLE subscription_plans
+ALTER COLUMN features TYPE text[] USING features::text[];
+
+INSERT INTO subscription_plans (subscription_plan_slug, display_name, features) 
+VALUES ('basic-monthly-19-usd', 'Basic - $19/mo', array['PUBLISH', 'EMBED']), 
+  ('basic-annual-199-usd', 'Basic - $199/yr', array['PUBLISH', 'EMBED']), 
+  ('pro-annual-588-usd', 'Pro - $588/yr', array['PUBLISH', 'EMBED', 'EXPLORER', 'GOOGLE_ANALYTICS_TAG', 'LIGHTWEIGHT_DESIGN_SYSTEM', 'UNSPLASH_COVER_ART', 'CUSTOMIZE_LOGO_RULES', 'SCHEDULE_PUBLISHING', 'DRAFT_GUIDELINES', 'COLLABORATORS']),
+  ('agency-basic-monthly-99-usd', 'Agency Basic - $99/mo', array['PUBLISH', 'EMBED', 'EXPLORER', 'GOOGLE_ANALYTICS_TAG', 'LIGHTWEIGHT_DESIGN_SYSTEM', 'UNSPLASH_COVER_ART', 'CUSTOMIZE_LOGO_RULES', 'SCHEDULE_PUBLISHING', 'DRAFT_GUIDELINES', 'COLLABORATORS', 'WHITE_LABEL', 'SUBSCRIPTION_SWITCHER']),
+  ('agency-basic-annual-999-usd', 'Agency Basic - $999/yr', array['PUBLISH', 'EMBED', 'EXPLORER', 'GOOGLE_ANALYTICS_TAG', 'LIGHTWEIGHT_DESIGN_SYSTEM', 'UNSPLASH_COVER_ART', 'CUSTOMIZE_LOGO_RULES', 'SCHEDULE_PUBLISHING', 'DRAFT_GUIDELINES', 'COLLABORATORS', 'WHITE_LABEL', 'SUBSCRIPTION_SWITCHER']),
+  ('agency-pro-annual-3000-usd', 'Agency Pro - $3000/yr', array['PUBLISH', 'EMBED', 'EXPLORER', 'GOOGLE_ANALYTICS_TAG', 'LIGHTWEIGHT_DESIGN_SYSTEM', 'UNSPLASH_COVER_ART', 'CUSTOMIZE_LOGO_RULES', 'SCHEDULE_PUBLISHING', 'DRAFT_GUIDELINES', 'COLLABORATORS', 'WHITE_LABEL', 'SUBSCRIPTION_SWITCHER', 'SHOWCASE_BRANDS', 'CUSTOM_PAGE_GUIDELINE', 'EXPLORER_ADVANCED', 'CUSTOMIZE_TEXT_LAST_PAGE', 'CUSTOMIZE_GUIDELINE_COVER_ART'])
+ON CONFLICT (subscription_plan_slug) 
+DO
+ UPDATE
+   SET display_name = EXCLUDED.display_name, features = EXCLUDED.features;

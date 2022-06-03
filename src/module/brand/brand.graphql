@@ -1,0 +1,26 @@
+type Query {
+  brandList: [Brand]
+}
+
+type Mutation {
+  createBrand(values: BrandInput): String
+}
+
+type Brand {
+  brandId: UUID!
+  websiteUrl: URL!
+  locale: String
+  hadGuidelines: String
+  isPublished: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+  deletedAt: DateTime
+}
+
+input BrandInput {
+  websiteURL: URL!
+  locale: String
+  hadGuidelines: String
+  isPublished: Boolean
+}

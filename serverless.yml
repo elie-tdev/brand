@@ -1,0 +1,26 @@
+service: 1brand-graphql-gateway
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+package:
+  exclude:
+    - .git/**
+    - src/**
+    - test/**
+    - nodemon.json
+    - README.md
+
+functions:
+  index:
+    handler: dist/lambda.handler
+    events:
+      - http:
+          cors: true
+          path: graphql
+          method: post
+      - http:
+          cors: true
+          path: "{proxy+}"
+          method: any

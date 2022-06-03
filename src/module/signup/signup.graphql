@@ -1,0 +1,18 @@
+type Mutation {
+  signUpServer(values: SignUpInput): UserCtx
+}
+
+type SignUp {
+  user: User
+  tenant: Tenant
+}
+
+input SignUpInput {
+  firebaseUid: String!
+  name: String!
+  email: EmailAddress!
+  websiteUrl: URL!
+  hadGuidelines: String!
+  isAgency: Boolean
+  policiesAgreed: Boolean!
+}

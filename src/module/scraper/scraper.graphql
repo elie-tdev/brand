@@ -1,0 +1,13 @@
+type Query {
+  scrapeByBrandId(brandId: UUID!): [ScrapedData]
+}
+
+type Mutation {
+  scrapeThisUrl(websiteUrl: URL!, brandId: UUID!): JSON
+}
+
+type ScrapedData {
+  scraperId: UUID!
+  brandId: UUID!
+  scrapedObj: JSON
+}

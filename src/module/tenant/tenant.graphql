@@ -1,0 +1,62 @@
+type Query {
+  tenantList: [Tenant]
+}
+
+type Mutation {
+  createTenant(values: TenantInput): String
+}
+
+type Tenant {
+  tenantId: UUID!
+  subscriptionPlanSlug: String!
+  isAgency: Boolean!
+  subscriptionPeriodEnds: DateTime!
+  chargebeeSubscriptionId: String!
+  chargebeeCustomerId: String!
+  adminReviewStatus: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  archivedAt: DateTime
+  deletedAt: DateTime
+}
+
+input TenantInput {
+  isAgency: String!
+  subscriptionPlanSlug: String
+}
+
+type TenantUsers {
+  tenantId: UUID!
+  userId: UUID!
+  userTenantRoleSlug: [UserTenantRoleSlugs!]
+  inviteHash: String
+  inviteStatus: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+  deletedAt: DateTime
+}
+
+type TenantBrands {
+  tenantId: UUID!
+  brandId: UUID!
+  tenantBrandRoleSlug: [TenantBrandRoleSlugs!]
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+  deletedAt: DateTime
+}
+
+enum TenantBrandRoleSlugs {
+  owner
+  agent
+}
+
+type TenantBrandRoles {
+  tenantBrandRoleSlug: TenantBrandRoleSlugs!
+  displayName: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+  deletedAt: DateTime
+}

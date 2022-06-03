@@ -1,0 +1,18 @@
+type Query {
+  logoList: [LogoData]
+}
+
+type Mutation {
+  scrapeLogo(websiteUrl: URL!, brandId: UUID!): String,
+  encodeLogo(imageFile: String!, brandId: UUID!): String
+}
+
+type LogoData {
+  logoId: UUID!
+  brandId: UUID!
+  logoUrl: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  archivedAt: DateTime
+  deletedAt: DateTime
+}

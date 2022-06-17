@@ -1,13 +1,18 @@
 type Query {
-  scrapeByBrandId(brandId: UUID!): [ScrapedData]
+  scrapesByBrandId(brandId: UUID!): [ScrapedData]
 }
 
 type Mutation {
-  scrapeThisUrl(websiteUrl: URL!, brandId: UUID!): JSON
+  scrapeThisUrl(brandName: String!, websiteUrl: URL!, brandId: UUID!): ScrapeResponsePayload
+}
+
+type ScrapeResponsePayload {
+  draftGuidelineId: UUID!
+  logo: LogoPayload
 }
 
 type ScrapedData {
-  scraperId: UUID!
+  scrapeId: UUID!
   brandId: UUID!
   scrapedObj: JSON
 }

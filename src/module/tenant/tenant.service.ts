@@ -2,17 +2,17 @@ import { Injectable, Logger } from '@nestjs/common'
 import { DatabaseService } from '@module/database/database.service'
 import { TenantBrandRolesEntity } from './tenant-brand-roles.entity'
 import {
-  TenantInput,
+  CreateTenantInput,
   TenantBrandsInput,
   TenantUsersInput,
 } from './tenant.interfaces'
 
 @Injectable()
 export class TenantService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(private readonly db: DatabaseService) { }
   private readonly logger = new Logger(TenantService.name)
 
-  async createTenant(values: TenantInput): Promise<void> {
+  async createTenant(values: CreateTenantInput): Promise<void> {
     const {
       isAgency,
       brandId,
@@ -27,23 +27,23 @@ export class TenantService {
       .one(
         `with new_tenant as (
           insert into tenants (
-            is_agency,
-            chargebee_customer_id
+            is_agency
           ) values (
-            $<isAgency>,
-            $<chargebeeCustomerId>
+            $<isAgency>
           ) returning tenant_id
         ), new_tenant_brand as (
             insert into tenant_brands (
               tenant_id,
               brand_id,
               tenant_brand_role_slug,
+              chargebee_customer_id,
               chargebee_subscription_id,
               subscription_period_ends
             ) select
                 new_tenant.tenant_id,
                 $<brandId>,
                 $<tenantRoleSlug>,
+                $<chargebeeCustomerId>,
                 $<chargebeeSubscriptionId>,
                 $<subscriptionPeriodEnds>
               from new_tenant

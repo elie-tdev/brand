@@ -1,0 +1,1 @@
+ALTER TABLE published_guidelines DROP COLUMN scrape_id CASCADE;

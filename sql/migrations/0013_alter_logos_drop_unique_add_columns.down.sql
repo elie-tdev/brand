@@ -1,0 +1,1 @@
+ALTER TABLE logos ADD CONSTRAINT logos_brand_id_key UNIQUE (brand_id);

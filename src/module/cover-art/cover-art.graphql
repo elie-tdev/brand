@@ -1,0 +1,10 @@
+type Query {
+  listCoverArt: [CoverArt]
+}
+
+type CoverArt {
+  coverArtId: UUID!
+  coverArtSlug: String!
+  coverArtTitle: String!
+}
+

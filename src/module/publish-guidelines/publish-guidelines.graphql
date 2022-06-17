@@ -1,0 +1,53 @@
+type Query {
+  guidelinesByBrandId(brandId: UUID!, isPublic: Boolean!): PublishedGuidelineData
+  guidelineByGuidelineId(guidelineId: UUID!): PublishedGuidelineData
+  guidelineByWebsiteUrl(websiteUrl: URL!): PublishedGuidelineData
+  guidelineByDomainSlug(domainSlug: String!): PublishedGuidelineData
+  getGuidelineLastUpdateDate(guidelineId: UUID!): PublishedGuidelineData
+  getColorsByGuidelineId(guidelineId: UUID!): [ColorPayload]
+  getLogosByGuidelineId(guidelineId: UUID!): [LogoPayload]
+  getTypographyByGuidelineId(guidelineId: UUID!): [TypographyPayload]
+  getGuidelinePublicStatus(websiteUrl: URL!): PublishedGuidelineData
+  getGuidelinePublicStatusByDomainSlug(domainSlug: String!): PublishedGuidelineData
+  viewDraftGuideline: PublishedGuidelineData
+
+  draftGuidelinesByBrandId(brandId: UUID!): PublishedGuidelineData
+  draftGuidelineByGuidelineId(guidelineId: UUID!): PublishedGuidelineData
+  draftGuidelineByWebsiteUrl(websiteUrl: URL!): DraftGuidelinePayload
+  draftGuidelineByDomainSlug(domainSlug: String!): DraftGuidelinePayload
+  getDraftGuidelineLastUpdateDate(guidelineId: UUID!): PublishedGuidelineData
+  getDraftTypographyByGuidelineId(guidelineId: UUID!): [TypographyPayload]
+  getDraftLogosByGuidelineId(guidelineId: UUID!): [LogoPayload]
+  getDraftColorsByGuidelineId(guidelineId: UUID!): [ColorPayload]
+}
+
+type Mutation {
+  saveGuideline(brandId: UUID!): PublishedGuidelineData
+  publishGuideline(brandId: UUID!): Success
+  deleteGuideline(guidelineId: UUID!): Success
+  changeGuidelinePublicState(guidelineId: UUID!, isPublic: Boolean!): Success
+
+  deleteDraftGuideline(guidelineId: UUID!): Success
+}
+
+type PublishedGuidelineData {
+  guidelineId: UUID!
+  brandId: UUID!
+  scrapeId: UUID
+  guidelineObj: GuidelinePayload!
+  isPublic: Boolean!
+  coverArtSlug: String!
+  domainSlug: String
+  updatedAt: DateTime
+}
+
+type DraftGuidelinePayload {
+  guidelineObj: GuidelinePayload!
+  coverArtSlug: String
+}
+
+type GuidelinePayload {
+  logos: [LogoPayload]
+  colors: [ColorPayload]
+  typography: [TypographyPayload]
+}

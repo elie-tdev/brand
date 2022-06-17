@@ -2,14 +2,15 @@ import { TenantEntity } from './tenant.entity'
 import { BrandEntity } from '../brand/brand.entity'
 import { UserEntity } from '@module/user/user.entity'
 import { UserTenantRolesEntity } from '../user/user-tenant-roles.entity'
+import { TenantBrandsEntity } from './tenant-brands.entity';
 
-export interface TenantInput {
+export interface CreateTenantInput {
   isAgency: TenantEntity['isAgency']
   brandId: BrandEntity['brandId']
   userId: UserEntity['userId']
-  chargebeeSubscriptionId: TenantEntity['chargebeeSubscriptionId']
-  chargebeeCustomerId: TenantEntity['chargebeeSubscriptionId']
-  subscriptionPeriodEnds: TenantEntity['subscriptionPeriodEnds']
+  chargebeeSubscriptionId: TenantBrandsEntity['chargebeeSubscriptionId']
+  chargebeeCustomerId: TenantBrandsEntity['chargebeeSubscriptionId']
+  subscriptionPeriodEnds: TenantBrandsEntity['subscriptionPeriodEnds']
 }
 
 export interface TenantBrandsInput {

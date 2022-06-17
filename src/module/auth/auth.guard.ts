@@ -9,6 +9,7 @@ import { Observable } from 'rxjs'
 import { AuthService } from './auth.service'
 import { ValidateUserAuthResponse } from './auth.interface'
 import { UserService } from '../user/user.service'
+import { ApolloError } from 'apollo-server-errors'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -47,6 +48,9 @@ export class AuthGuard implements CanActivate {
 
           return isValidAuth
         }
+      })
+      .catch(err => {
+        throw new ApolloError('Authorization failed', '403', err)
       })
   }
 }

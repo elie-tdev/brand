@@ -13,12 +13,12 @@ import { SubscriptionService } from '../subscription/subscription.service'
   imports: [
     SubscriptionModule,
     UserModule,
-    AuthModule,
+
     HttpModule.register({
       responseType: 'stream',
-      headers: {'Content-Type': 'image/png'},
+      headers: { 'Content-Type': 'image/png' },
     })
   ],
-  providers: [LogoService, LogoResolver, AuthService, UserService, SubscriptionService]
+  providers: [LogoService, LogoResolver, UserService, SubscriptionService]
 })
-export class LogoModule {}
+export class LogoModule { }

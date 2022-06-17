@@ -8,4 +8,4 @@ import { SubscriptionService } from '@module/subscription/subscription.service'
   imports: [SubscriptionModule],
   providers: [UserResolver, UserService, SubscriptionService],
 })
-export class UserModule {}
+export class UserModule { }

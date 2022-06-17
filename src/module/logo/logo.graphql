@@ -1,16 +1,52 @@
 type Query {
-  logoList: [LogoData]
+  logosByBrandId(brandId: UUID!): [LogoPayload]
+  logoByObjId(brandId: UUID!, _id: UUID!): LogoPayload
 }
 
 type Mutation {
-  scrapeLogo(websiteUrl: URL!, brandId: UUID!): String,
-  encodeLogo(imageFile: String!, brandId: UUID!): String
+  encodeLogo(imageFile: String!, fileExt: String!, brandId: UUID!): LogoPayload
+  replaceLogoSpacingObj(brandId: UUID!, _id: UUID!, spacing: LogoSpacingInput!): Success
+}
+
+type LogoPayload {
+  _id: UUID!
+  title: String
+  tags: [String]
+  originalUrl: URL!
+  encodedUrl: URL!
+  encodedSize: EncodedLogoSize
+  spacing: LogoSpacing
+}
+
+type EncodedLogoSize {
+  width: Int
+  height: Int
+  aspectRatio: String
+}
+
+type LogoSpacing {
+  isEditedByUser: Boolean
+  topPercentage: Float
+  bottomPercentage: Float
+  leftPercentage: Float
+  rightPercentage: Float
+  spacingMultiple: Float
+}
+
+input LogoSpacingInput {
+  isEditedByUser: Boolean
+  topPercentage: Float
+  bottomPercentage: Float
+  leftPercentage: Float
+  rightPercentage: Float
+  spacingMultiple: Float
 }
 
 type LogoData {
   logoId: UUID!
   brandId: UUID!
-  logoUrl: String!
+  original: URL
+  encoded: URL
   createdAt: DateTime
   updatedAt: DateTime
   archivedAt: DateTime

@@ -7,6 +7,7 @@ export class TenantBrandsEntity extends DatabaseEntity {
   subscriptionPlanSlug: TenantBrandsDatabaseFields['subscription_plan_slug']
   subscriptionPeriodEnds: TenantBrandsDatabaseFields['subscription_period_ends']
   chargebeeSubscriptionId: TenantBrandsDatabaseFields['chargebee_subscription_id']
+  chargebeeCustomerId: TenantBrandsDatabaseFields['chargebee_customer_id']
 }
 
 export interface TenantBrandsDatabaseFields {
@@ -16,4 +17,5 @@ export interface TenantBrandsDatabaseFields {
   subscription_plan_slug: string
   subscription_period_ends: number
   chargebee_subscription_id: string
+  chargebee_customer_id: string
 }

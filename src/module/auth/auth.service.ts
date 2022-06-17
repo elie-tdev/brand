@@ -5,13 +5,14 @@ import { auth } from './firebase.init'
 import { parseAuthHeader } from '@common/util/parseAuthHeader'
 import { ConfigService } from '@module/config/config.service'
 import { ValidateUserAuthResponse } from './auth.interface'
+import { ApolloError } from 'apollo-server-errors'
 
 @Injectable()
 export class AuthService {
   constructor(
     public readonly httpService: HttpService,
     public readonly config: ConfigService,
-  ) {}
+  ) { }
   private readonly logger = new Logger(AuthService.name)
 
   async validateUserAuth(
@@ -33,29 +34,32 @@ export class AuthService {
     const decodedToken = jwt.decode(token, { complete: true })
 
     // tslint:disable-next-line: no-string-literal
-    await this.getSigningKey(decodedToken['header'].kid).then(key => {
-      jwt.verify(
-        token,
-        key,
-        {
-          audience: projectId,
-          issuer: `https://securetoken.google.com/${projectId}`,
-        },
-        (err, decoded) => {
-          if (!decoded || err) {
-            this.logger.error(err)
-            response = { isValidAuth: false }
-          } else {
-            // Everything is good return true
-            response = {
-              isValidAuth: true,
-              // tslint:disable-next-line: no-string-literal
-              firebaseUid: decodedToken['payload'].user_id,
+    await this.getSigningKey(decodedToken['header'].kid)
+      .then(key => {
+        jwt.verify(
+          token,
+          key,
+          {
+            audience: projectId,
+            issuer: `https://securetoken.google.com/${projectId}`,
+          },
+          (err, decoded) => {
+            if (!decoded || err) {
+              this.logger.error(err)
+              response = { isValidAuth: false }
+              throw new ApolloError('JWT verification failed', 'LOGOUT', err)
+            } else {
+              // Everything is good return true
+              response = {
+                isValidAuth: true,
+                // tslint:disable-next-line: no-string-literal
+                firebaseUid: decodedToken['payload'].user_id,
+              }
             }
-          }
-        },
-      )
-    })
+          },
+        )
+      })
+      .catch(err => new ApolloError('JWT Validation failed', 'LOGOUT', err))
     // this.logger.log('verifyJwtToken - response -> ', JSON.stringify(response))
     return await response
   }
@@ -69,7 +73,7 @@ export class AuthService {
       .then(res => {
         return res.data[kid]
       })
-      .catch(e => this.logger.error(e))
+      .catch(err => new ApolloError('JWT Key failed', 'LOGOUT', err))
   }
 
   async signInUserAuth(email: string, password: string): Promise<string> {
@@ -78,6 +82,9 @@ export class AuthService {
       .then(async (user: firebase.auth.UserCredential) => {
         const token = await auth.currentUser.getIdToken(true)
         return token
+      })
+      .catch(err => {
+        throw new ApolloError('SignIn failed', 'WTF', err)
       })
   }
 

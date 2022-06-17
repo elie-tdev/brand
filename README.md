@@ -3,15 +3,18 @@
 ## Description
 
 [Nest](https://github.com/nestjs/nest)
+
 [Nest GraphQL](https://github.com/nestjs/graphql)
-PostgreSQL 10
-Docker, Docker Compose, & Make
+
+PostgreSQL 11, Docker, Docker Compose, & Make
 
 ## Local development
 ### Initial Setup
 
 ```bash
 $ make
+$ MIGRATION_PATH=<your_path_to>/graphql-gateway make migrate-init 
+$ MIGRATION_PATH=<your_path_to>/graphql-gateway make migrate-up
 ```
 
 ### Continued development
@@ -27,36 +30,13 @@ $ make compose-down
 
 ### Running migrations
 ```bash
-$ make migrate-up
-```
-
-## Yarn commands for starting the app
-
-```bash
-# docker compose
-$ make compose-up
-
-# development
-$ yarn start
-
-# watch mode
-$ yarn start:dev
-
-# production mode
-$ yarn start:prod
+$ MIGRATION_PATH=<your_path_to>/graphql-gateway make migrate-up
 ```
 
 ## Test
 
 ```bash
-# unit tests
-$ yarn test
-
-# e2e tests
-$ yarn test:e2e
-
-# test coverage
-$ yarn test:cov
+$ make test
 ```
 
 ## Database migrations
@@ -71,12 +51,12 @@ Read more about cli commands [here](https://github.com/golang-migrate/migrate/tr
 
 Migrate the initial setup. Requires RDS admin credentials.
 ```bash
-make migrate-init
+$ MIGRATION_PATH=<your_path_to>/graphql-gateway make migrate-init
 ```
 
 Migrate changes up
 ```bash
-make migrate-up
+$ MIGRATION_PATH=<your_path_to>/graphql-gateway make migrate-up
 ```
 
 Migate the changes down

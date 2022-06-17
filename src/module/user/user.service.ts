@@ -5,6 +5,7 @@ import { DatabaseService } from '../database/database.service'
 import { keysToCamel } from '../../common/util/keysToCamel'
 import { UserTenantRolesEntity } from './user-tenant-roles.entity'
 import { UserRequestContext } from './user.interface'
+import { ApolloError } from 'apollo-server-errors'
 
 @Injectable()
 export class UserService {
@@ -86,7 +87,9 @@ export class UserService {
       .one(
         `select
           users.user_id,
+          users.firebase_uid,
           users.name,
+          users.email,
           tenant_users.tenant_id,
           tenant_users.user_tenant_role_slug,
           array_to_json (
@@ -114,11 +117,14 @@ export class UserService {
         firebaseUid,
       )
       .then((userCtx: UserRequestContext) => {
-        this.logger.log(
-          'getUserContextByFirebaseUid => userCtx -> ' +
-            JSON.stringify(userCtx),
-        )
+        // this.logger.log(
+        //   'getUserContextByFirebaseUid => userCtx -> ' +
+        //     JSON.stringify(userCtx),
+        // )
         return keysToCamel(userCtx)
+      })
+      .catch(err => {
+        throw new ApolloError('User Context failed', 'LOGOUT', err)
       })
   }
 

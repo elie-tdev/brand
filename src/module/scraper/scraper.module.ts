@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/common'
 import { ScraperService } from './scraper.service';
 import { ScraperResolver } from './scraper.resolver';
-import { ScraperEntity } from './scraper.entity'
+import { LogoModule } from '@module/logo/logo.module';
+import { LogoService } from '@module/logo/logo.service';
 
 @Module({
-  imports: [HttpModule],
-  providers: [ScraperService, ScraperResolver]
+  imports: [HttpModule, LogoModule],
+  providers: [ScraperService, ScraperResolver, LogoService]
 })
-export class ScraperModule {}
+export class ScraperModule { }

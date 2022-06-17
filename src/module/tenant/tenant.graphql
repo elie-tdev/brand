@@ -10,9 +10,6 @@ type Tenant {
   tenantId: UUID!
   subscriptionPlanSlug: String!
   isAgency: Boolean!
-  subscriptionPeriodEnds: DateTime!
-  chargebeeSubscriptionId: String!
-  chargebeeCustomerId: String!
   adminReviewStatus: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -41,6 +38,9 @@ type TenantBrands {
   tenantId: UUID!
   brandId: UUID!
   tenantBrandRoleSlug: [TenantBrandRoleSlugs!]
+  subscriptionPeriodEnds: DateTime!
+  chargebeeSubscriptionId: String!
+  chargebeeCustomerId: String!
   createdAt: DateTime
   updatedAt: DateTime
   archivedAt: DateTime

@@ -9,6 +9,7 @@ export interface UserRequestContext {
   name: UsersDatabaseFields['name']
   email: UsersDatabaseFields['email']
   userId: UsersDatabaseFields['user_id']
+  firebaseUid: UsersDatabaseFields['firebase_uid']
   tenantId: TenantBrandsDatabaseFields['tenant_id']
   userTenantRoleSlug: UserTenantRoleSlugs
   brands: UserBrands[]

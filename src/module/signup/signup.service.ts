@@ -1,57 +1,43 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { ApolloError } from 'apollo-server-errors'
 import { DatabaseService } from '@module/database/database.service'
-import { SignUpInput, UserCtx } from 'typings/graphql.schema'
+import { SignUpInput } from 'typings/graphql.schema'
 import { SubscriptionService } from '@module/subscription/subscription.service'
-import { AutoCollectionsEnum } from '@module/subscription/subscription.interface'
 import { keysToCamel } from '@common/util/keysToCamel'
+import { BrandEntity } from '@module/brand/brand.entity'
 
 @Injectable()
 export class SignupService {
   constructor(
     private readonly db: DatabaseService,
     private readonly subscriptionService: SubscriptionService,
-  ) {}
+  ) { }
   private readonly logger = new Logger(SignupService.name)
 
-  async createSignup(values: SignUpInput): Promise<UserCtx> {
-    const {
-      firebaseUid,
-      name,
-      email,
-      policiesAgreed,
-      websiteUrl,
-      hadGuidelines,
-    } = values
+  async createSignup(values: SignUpInput): Promise<BrandEntity['brandId']> {
+    const { firebaseUid, name, email, policiesAgreed } = values
 
-    // this.logger.log(
-    //   'createSignup values -> ' + JSON.stringify(values),
-    // )
+    // this.logger.log('createSignup values -> ' + JSON.stringify(values))
 
-    // Handle isAgency if null
-    let { isAgency } = values
+    // Handle Agency stuff if null
+    let { isAgency, agencyName } = values
     isAgency = isAgency !== true ? false : isAgency
+    agencyName = agencyName === undefined ? null : agencyName
+    // this.logger.log('createSignUp agencyName -> ' + agencyName)
 
-    const subscriptionPlanSlug = !isAgency
-      ? 'basic-monthly-19-usd'
-      : 'agency-basic-annual-999-usd'
     const tenantRoleSlug = isAgency ? 'agent' : 'owner'
     const userTenantRoleSlug = 'admin'
     const {
       chargebeeSubscriptionId,
       chargebeeCustomerId,
       subscriptionPeriodEnds,
-    } = await this.subscriptionService.createSubscription({
-      plan_id: subscriptionPlanSlug,
-      auto_collection: AutoCollectionsEnum.OFF,
-      customer: {
-        email,
-      },
-    })
+      subscriptionPlanSlug,
+    } = await this.subscriptionService.initialSubscription(email, isAgency)
     // this.logger.log('chargebeeSubscriptionID -> ' + chargebeeSubscriptionId)
     // this.logger.log('chargebeeCustomerID -> ' + chargebeeCustomerId)
     // this.logger.log('subscriptionPeriodEnds -> ' + subscriptionPeriodEnds)
 
-    const userCtx = await this.db.conn
+    const brandId = await this.db.conn
       .one(
         `with new_user as (
           insert into users (
@@ -66,26 +52,27 @@ export class SignupService {
             $<policiesAgreed>
           ) returning user_id
         ), new_brand as (
-          insert into brands (
-            website_url,
-            had_guidelines
-          ) values (
-            $<websiteUrl>,
-            $<hadGuidelines>
-          ) returning brand_id
-        ), new_tenant as (
+            insert into brands (
+              website_url,
+              had_guidelines
+            ) values (
+              null,
+              null
+            ) returning brand_id
+          ), new_tenant as (
           insert into tenants (
             is_agency,
-            chargebee_customer_id
+            agency_name
           ) values (
             $<isAgency>,
-            $<chargebeeCustomerId>
+            $<agencyName>
           ) returning tenant_id
         ), new_tenant_brand as (
             insert into tenant_brands (
               tenant_id,
               brand_id,
               tenant_brand_role_slug,
+              chargebee_customer_id,
               chargebee_subscription_id,
               subscription_period_ends,
               subscription_plan_slug
@@ -93,6 +80,7 @@ export class SignupService {
                 new_tenant.tenant_id,
                 new_brand.brand_id,
                 $<tenantRoleSlug>,
+                $<chargebeeCustomerId>,
                 $<chargebeeSubscriptionId>,
                 $<subscriptionPeriodEnds>,
                 $<subscriptionPlanSlug>
@@ -108,15 +96,14 @@ export class SignupService {
                 $<userTenantRoleSlug>
             from new_tenant, new_user
             returning tenant_id
-      ) select new_tenant.tenant_id, new_brand.brand_id, new_user.user_id from new_tenant, new_brand, new_user`,
+      ) select new_brand.brand_id from new_brand`,
         {
           firebaseUid,
           name,
           email,
           policiesAgreed,
-          websiteUrl,
-          hadGuidelines,
           isAgency,
+          agencyName,
           chargebeeCustomerId,
           chargebeeSubscriptionId,
           subscriptionPeriodEnds,
@@ -125,8 +112,10 @@ export class SignupService {
           tenantRoleSlug,
         },
       )
-      .catch(e => this.logger.error('createSignup error -> ', e))
+      .catch(err => {
+        throw new ApolloError('signUpServer failed', 'SIGNUP_FAILED', err)
+      })
 
-    return keysToCamel(userCtx)
+    return keysToCamel(brandId)
   }
 }

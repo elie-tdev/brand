@@ -13,8 +13,14 @@ import { SubscriptionPlanModule } from './module/subscription-plan/subscription-
 import { SignupModule } from './module/signup/signup.module'
 import { SubscriptionModule } from './module/subscription/subscription.module'
 import { DatabaseModule } from './module/database/database.module'
-import { ScraperModule } from './module/scraper/scraper.module';
-import { LogoModule } from './module/logo/logo.module';
+import { ScraperModule } from './module/scraper/scraper.module'
+import { LogoModule } from './module/logo/logo.module'
+import { TypographyModule } from './module/typography/typography.module';
+import { reportError } from '@common/util/reportError'
+import { GuidelineModule } from './module/guideline/guideline.module';
+import { ColorModule } from './module/color/color.module';
+import { PublishGuidelinesModule } from './module/publish-guidelines/publish-guidelines.module';
+import { CoverArtModule } from './module/cover-art/cover-art.module';
 
 import 'reflect-metadata'
 import * as depthLimit from 'graphql-depth-limit'
@@ -85,6 +91,15 @@ import {
       },
       mocks: false, // require('./common/util/mergeMocks').mocks,
       tracing: true,
+      formatError(err) {
+        reportError(err)
+        return {
+          message: err.message,
+          code: err.extensions.code,
+          locations: err.locations,
+          path: err.path,
+        }
+      },
     }),
     AuthModule,
     LoggerModule,
@@ -98,7 +113,12 @@ import {
     DatabaseModule,
     ScraperModule,
     LogoModule,
+    TypographyModule,
+    GuidelineModule,
+    ColorModule,
+    PublishGuidelinesModule,
+    CoverArtModule,
   ],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

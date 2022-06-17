@@ -1,0 +1,23 @@
+# dependencies
+/node_modules
+
+# IDE
+/.idea
+/.awcache
+/.vscode
+
+# misc
+npm-debug.log
+
+# dist
+/dist
+.env
+.env.development
+.env.production
+.env.staging
+
+# sql postprocess
+/sql_out
+
+/tmp/*
+!/tmp/.gitkeep

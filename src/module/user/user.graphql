@@ -1,6 +1,6 @@
 type Query {
   userList: [User]
-  getUserContextByFirebaseUid(firebaseUid: String!): UserCtx
+  userClientCtx: UserClientCtx
 }
 
 type Mutation {
@@ -27,9 +27,11 @@ input UserInput {
   policiesAgreed: Boolean # PoliciesPayload
 }
 
-type UserCtx {
+type UserClientCtx {
   name: String!
+  firebaseUid: String!
   userId: String!
+  email: EmailAddress!
   tenantId: String!
   userTenantRoleSlug: UserTenantRoleSlugs!
   brands: [UserBrands]
@@ -37,7 +39,6 @@ type UserCtx {
 
 type UserBrands {
   brandId: String!
-  chargebeeSubscriptionId: String
   subscriptionPeriodEnds: PositiveInt
   tenantBrandRoleSlug: TenantBrandRoleSlugs!
 }

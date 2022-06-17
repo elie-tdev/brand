@@ -1,7 +1,6 @@
-import { TenantEntity } from '@module/tenant/tenant.entity'
 import { TenantBrandsEntity } from '@module/tenant/tenant-brands.entity'
 
-export interface Subscription {}
+export interface Subscription { }
 
 export interface ChargebeeSubscriptionInput {
   plan_id: string
@@ -42,6 +41,7 @@ interface ChargebeeCard {
 
 export interface CreateSubscriptionResponse {
   chargebeeSubscriptionId: TenantBrandsEntity['chargebeeSubscriptionId']
-  chargebeeCustomerId: TenantEntity['chargebeeCustomerId']
+  chargebeeCustomerId: TenantBrandsEntity['chargebeeCustomerId']
   subscriptionPeriodEnds: TenantBrandsEntity['subscriptionPeriodEnds']
+  subscriptionPlanSlug?: TenantBrandsEntity['subscriptionPlanSlug']
 }

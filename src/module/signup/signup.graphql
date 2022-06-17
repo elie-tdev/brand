@@ -1,18 +1,16 @@
 type Mutation {
-  signUpServer(values: SignUpInput): UserCtx
+  signUpServer(values: SignUpInput): SignUpPayload!
 }
 
-type SignUp {
-  user: User
-  tenant: Tenant
+type SignUpPayload {
+  brandId: String!
 }
 
 input SignUpInput {
   firebaseUid: String!
   name: String!
   email: EmailAddress!
-  websiteUrl: URL!
-  hadGuidelines: String!
   isAgency: Boolean
+  agencyName: String
   policiesAgreed: Boolean!
 }

@@ -1,0 +1,2 @@
+ALTER TABLE published_guidelines
+DROP CONSTRAINT published_guidelines_brand_id_unique;

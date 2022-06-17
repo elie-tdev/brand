@@ -1,0 +1,38 @@
+type Query {
+  typographyByBrandId(brandId: UUID!): [TypographyPayload]
+  fetchTypographySource(brandId: UUID!, _id: UUID!): TypographyPayload
+  findFont(brandId: UUID!, fontFamily: String!, _id: UUID): Boolean
+}
+
+type Mutation {
+  replaceTypographyObj(brandId: UUID!, _id: UUID!, typographyObj: TypographyInput!): Success
+  addTypography(brandId: UUID!, typographyObj: TypographyInput!): Success
+}
+
+type TypographyPayload {
+  _id: UUID!
+  title: String
+  tags: [String]
+  element: String
+  color: String
+  font: String
+  fontFamily: String!
+  fontSize: String
+  fontVariant: String
+  source: TypographySourcePayload
+}
+
+type TypographySourcePayload {
+  ref: String
+  provider: String
+  variants: [String]
+}
+
+input TypographyInput {
+  element: String
+  color: String
+  font: String
+  fontFamily: String!
+  fontSize: String
+  fontVariant: String
+}

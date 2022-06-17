@@ -1,0 +1,24 @@
+type Query {
+  getTitleTags(brandId: UUID!, _id: UUID!): TitleTags
+}
+
+type Mutation {
+  replaceTitleTags(brandId: UUID!, _id: UUID!, title: String, tags: [String]): Success
+  removeObjByObjId(brandId: UUID!, _id: UUID!): Success
+  buildFromScratch(brandName: String!, websiteUrl: URL!, brandId: UUID!): FromScratchResponsePayload
+  updateSelectedCoverMode(brandId: UUID!, coverArtSlug: String!): Success
+}
+
+type Guideline {
+  typography: [TypographyPayload]
+}
+
+type TitleTags {
+  _id: UUID!
+  title: String
+  tags: [String]
+}
+
+type FromScratchResponsePayload {
+  draftGuidelineId: UUID!
+}

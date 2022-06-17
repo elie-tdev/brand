@@ -5,7 +5,10 @@ import { TenantBrandsEntity } from '@module/tenant/tenant-brands.entity'
 import {
   ChargebeeSubscriptionInput,
   CreateSubscriptionResponse,
+  AutoCollectionsEnum,
 } from './subscription.interface'
+import { TenantEntity } from '@module/tenant/tenant.entity'
+import { UserEntity } from '@module/user/user.entity'
 
 @Injectable()
 export class SubscriptionService implements OnModuleInit {
@@ -13,6 +16,37 @@ export class SubscriptionService implements OnModuleInit {
 
   onModuleInit() {
     InitChargebee()
+  }
+
+  async initialSubscription(
+    email: UserEntity['email'],
+    isAgency: TenantEntity['isAgency'],
+  ): Promise<CreateSubscriptionResponse> {
+    const subscriptionPlanSlug = !isAgency
+      ? 'basic-monthly-19-usd'
+      : 'agency-basic-annual-999-usd'
+
+    const { subscription } = await chargebee.subscription
+      .create({
+        plan_id: subscriptionPlanSlug,
+        auto_collection: AutoCollectionsEnum.OFF,
+        customer: {
+          email,
+        },
+      })
+      .request(error => {
+        if (error) {
+          // handle error
+          this.logger.error(JSON.stringify(error))
+        }
+      })
+
+    return {
+      chargebeeSubscriptionId: subscription.id,
+      chargebeeCustomerId: subscription.customer_id,
+      subscriptionPeriodEnds: subscription.trial_end * 1000,
+      subscriptionPlanSlug,
+    }
   }
 
   async createSubscription(
